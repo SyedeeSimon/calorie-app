@@ -1,0 +1,110 @@
+type Query {
+    foodEntries(
+        after: String, first: Int, before: String, last: Int,
+        filter: FoodEntriesFilterInput
+    ): FoodEntryConnection
+    dailyCalories(after: String, first: Int, before: String, last: Int): DailyCalorieConnection
+    monthlyExpenses(after: String, first: Int, before: String, last: Int): MonthlyExpenseConnection
+    averageCaloriesAddedLastWeek : [AverageCalories]!
+    currentUser: User
+}
+
+type AverageCalories {
+    userAdded: User!
+    value: Float!
+}
+
+input FoodEntriesFilterInput {
+    startDate: String
+    endDate: String
+    foodIds: [String]!
+}
+
+input SaveFoodEntryInput {
+    id: ID
+    foodName: String!
+    calories: Int!
+    price: Float,
+    createdAt: String!
+}
+
+type Mutation {
+    saveFoodEntry(foodEntry: SaveFoodEntryInput): FoodEntry
+    deleteFoodEntry(id: ID!) : Boolean!
+}
+
+type FoodEntryConnection {
+    pageInfo: PageInfo!
+    edges: [FoodEntryEdge]
+    totalCount: Int
+}
+
+type FoodEntryEdge {
+    node: FoodEntry!
+    cursor: String!
+}
+
+type FoodEntry implements Node {
+    id: ID!
+    foodName: String!
+    calories: Int!
+    price: Float
+    createdAt: String!
+    owner: User
+}
+
+type DailyCalorieConnection {
+    pageInfo: PageInfo!
+    edges: [DailyCalorieEdge]
+}
+
+type DailyCalorieEdge {
+    node: DailyCalorie!
+    cursor: String!
+}
+
+type DailyCalorie implements Node{
+    id: ID!
+    date: String!
+    value: Int!
+}
+
+type MonthlyExpenseConnection {
+    pageInfo: PageInfo!
+    edges: [MonthlyExpenseEdge]
+}
+
+type MonthlyExpenseEdge {
+    node: MonthlyExpense!
+    cursor: String!
+}
+
+type MonthlyExpense implements Node {
+    id: ID!
+    monthAndYear: String!
+    value: Float!
+}
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String
+    endCursor: String
+}
+
+type User implements Node{
+    id: ID!
+    name: String!
+    dailyCalorieLimit: Int!
+    monthlyExpenseLimit: Float
+    role: Role!
+}
+
+interface Node {
+    id: ID!
+}
+
+enum Role {
+    USER
+    ADMIN
+}

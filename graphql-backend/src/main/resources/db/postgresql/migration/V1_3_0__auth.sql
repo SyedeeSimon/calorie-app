@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS auth (
+    user_id integer PRIMARY KEY,
+    token VARCHAR(1024) UNIQUE NOT NULL
+);

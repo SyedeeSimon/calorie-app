@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.1</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.syedee</groupId>
+    <artifactId>graphql-backend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>graphql-backend</name>
+    <description>graphql-backend</description>
+    <properties>
+        <java.version>11</java.version>
+        <postgres.port>5432</postgres.port>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-graphql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webflux</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.graphql</groupId>
+            <artifactId>spring-graphql-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!-- Get postgres up and running within docker machine -->
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.36.0</version>
+
+                <configuration>
+                    <images>
+                        <image>
+                            <alias>database</alias>
+                            <name>postgres:13</name>
+                            <run>
+                                <containerNamePattern>%n-${project.artifactId}</containerNamePattern>
+                                <env>
+                                    <POSTGRES_HOST_AUTH_METHOD>trust</POSTGRES_HOST_AUTH_METHOD>
+                                </env>
+                                <ports>
+                                    <port>${postgres.port}:${postgres.port}</port>
+                                </ports>
+                                <wait>
+                                    <log>database system is ready to accept connections</log>
+                                    <time>20000</time>
+                                </wait>
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Database Schema and Data Migration -->
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>7.10.0</version>
+                <configuration>
+                    <url>jdbc:postgresql://localhost:${postgres.port}/postgres</url>
+                    <user>postgres</user>
+                    <schemas>
+                        <schema>postgres</schema>
+                    </schemas>
+                    <locations>
+                        <location>filesystem:${project.basedir}/src/main/resources/db/postgresql/migration</location>
+                    </locations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>migrate</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>migrate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+        </plugins>
+    </build>
+
+</project>

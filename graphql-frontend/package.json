@@ -1,0 +1,51 @@
+{
+  "name": "temp-ap",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@date-io/date-fns": "^2.14.0",
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.6.2",
+    "@mui/material": "^5.2.4",
+    "@mui/styled-engine-sc": "^5.1.0",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "date-fns": "^2.28.0",
+    "flow-bin": "^0.166.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-relay": "^12.0.0",
+    "react-scripts": "4.0.3",
+    "relay-runtime": "^12.0.0",
+    "styled-components": "^5.3.3",
+    "web-vitals": "^1.0.1"
+  },
+  "scripts": {
+    "start": "yarn run relay && react-scripts start",
+    "build": "yarn run relay && react-scripts build",
+    "relay": "yarn run relay-compiler --schema ./schema.graphql --src ./src/ --extensions js jsx",
+    "relay-watch": "yarn run relay-compiler --schema ./schema.graphql --src ./src/ --extensions js jsx --watch",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "flow": "flow"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "babel-plugin-relay": "^12.0.0",
+    "graphql": "^15.0.0",
+    "relay-compiler": "^12.0.0"
+  }
+}
